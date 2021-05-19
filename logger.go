@@ -33,8 +33,8 @@ type Logger struct {
 
 	// 线程与信号
 	threadCnt  int
-	waitGroups sync.WaitGroup
-	lock sync.RWMutex
+	WaitGroups sync.WaitGroup //TODO：怎样调用wait
+	lock       sync.RWMutex
 }
 
 func init() {
@@ -50,13 +50,12 @@ func init() {
 		signal:     make(chan int, 1),
 		kvs:        map[string]interface{}{},
 		threadCnt:  3,
-		waitGroups: sync.WaitGroup{},
+		WaitGroups: sync.WaitGroup{},
 	}
 
 	for _, p := range defaultLogger.providerList {
 		p.Init()
 	}
-
 }
 
 func NewLogger(logger *Logger) {
@@ -65,19 +64,18 @@ func NewLogger(logger *Logger) {
 
 func (logger *Logger) Start() {
 	defer func() {
+		// logger.WaitGroups.Wait()
 	}()
 
 	for i := 0; i < logger.threadCnt; i++ {
 		go logger.run()
-		logger.waitGroups.Add(1)
+		logger.WaitGroups.Add(1)
 	}
-
-	logger.waitGroups.Wait()
 }
 
 func (logger *Logger) run() {
 	defer func() {
-		logger.waitGroups.Done()
+		logger.WaitGroups.Done()
 	}()
 
 	for {
@@ -88,6 +86,7 @@ func (logger *Logger) run() {
 			for _, p := range logger.providerList {
 				p.WriteMsg(msg)
 			}
+
 		// 信号,TODO: 单信号只能停止一个线程
 		case sig := <-logger.signal:
 			if sig == consts.STOP {
@@ -137,16 +136,17 @@ func (logger *Logger) fmtLog(ctx context.Context, fmtStr string, value []interfa
 	w.Write([]byte{' '})
 
 	// 处理Kv
-	for _, v := range logger.kvs {
+	for k, v := range logger.kvs {
 		b, err := utils.CtxValueToBytes(v)
 		if err != nil {
 			fmt.Printf("[fmtLog] Error: %+v \n", err)
 		}
+		w.Write([]byte(k))
+		w.Write([]byte{' '})
 		w.Write(b)
 		w.Write([]byte{' '})
 	}
 
-	fmt.Println(w.Bytes())
 	select {
 	case logger.buf <- w.Bytes():
 	}

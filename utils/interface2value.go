@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"bytes"
-	"encoding/gob"
 	"fmt"
 	"strconv"
 )
@@ -61,11 +59,13 @@ func CtxValueToBytes(value interface{}) ([]byte, error) {
 		}
 		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert []rune Failed: value=%+v", value)
 	default:
-		buffer := bytes.NewBuffer([]byte{})
-		enc := gob.NewEncoder(buffer)
-		if err := enc.Encode(value); err == nil {
-			return buffer.Bytes(), nil
-		}
-		return []byte{},  fmt.Errorf("[CtxValueToBytes] Convert Struct Failed: value=%+v", value)
+		// TODO: 编解码问题
+		//buffer := bytes.NewBuffer([]byte{})
+		//enc := gob.NewEncoder(buffer)
+		//if err := enc.Encode(value); err == nil {
+		//	return buffer.Bytes(), nil
+		//}
+		//return []byte{},  fmt.Errorf("[CtxValueToBytes] Convert Struct Failed: value=%+v", value)
+		return []byte(fmt.Sprintf("%+v", value)), nil
 	}
 }

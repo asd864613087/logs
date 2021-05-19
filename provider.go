@@ -9,6 +9,7 @@ import (
 var (
 	consoleProvider = &ConsoleProvide{}
 	logAgentProvider = &LogAgentProvider{}
+	fileProvider = &FileProvider{}
 )
 
 type Provider interface {
@@ -56,15 +57,17 @@ type LogAgentProvider struct {
 	signal chan int
 }
 
-func (l LogAgentProvider) WriteMsg(msg []byte) {
-	if l.curBufPos + len(msg) > l.maxBufSize {
-		l.Flush()
-	}
-
+func (l *LogAgentProvider) WriteMsg(msg []byte) {
+	// TODO: 如何处理界限问题，logAgent需要对消息进行marshol
+	//if l.curBufPos + len(msg) > l.maxBufSize {
+	//	l.Flush()
+	//}
+	//
 	l.buf= append(l.buf, msg...)
+	l.Flush()
 }
 
-func (l LogAgentProvider) Init() {
+func (l *LogAgentProvider) Init() {
 	// TODO: 修改这部分初始化逻辑的位置
 	addr, err := net.ResolveUnixAddr("unix", consts.DEFAULT_LOGAGENT_UNIX_PATH)
 	if err != nil {
@@ -81,14 +84,15 @@ func (l LogAgentProvider) Init() {
 	l.conn = conn
 	l.level = consts.DEFAULT_LOGAGENT_PROVIDER_LEVEL
 	l.buf = make([]byte, 128)
-
+	l.signal = make(chan int)
 }
 
-func (l LogAgentProvider) SetLevel(level int) {
-	panic("implement me")
+func (l *LogAgentProvider) SetLevel(level int) {
+	l.level = level
 }
 
-func (l LogAgentProvider) Flush() {
+func (l *LogAgentProvider) Flush() {
+	// 将缓存内数据推到socket
 	_, err := l.conn.Write(l.buf)
 	if err != nil {
 		fmt.Printf("[LogAgentProvider.Flush] Flush: err = %s", err)
@@ -101,12 +105,37 @@ func (l LogAgentProvider) Flush() {
 }
 
 
-func (l LogAgentProvider) Finish() {
+func (l *LogAgentProvider) Finish() {
 	err := l.conn.Close()
 	if err != nil {
 		fmt.Printf("[LogAgentProvider.Finish] conn.Close Failed: err = %s", err)
 		return
 	}
 }
+
+type FileProvider struct {
+
+}
+
+func (f FileProvider) WriteMsg(msg []byte) {
+	panic("implement me")
+}
+
+func (f FileProvider) Init() {
+	panic("implement me")
+}
+
+func (f FileProvider) SetLevel(level int) {
+	panic("implement me")
+}
+
+func (f FileProvider) Flush() {
+	panic("implement me")
+}
+
+func (f FileProvider) Finish() {
+	panic("implement me")
+}
+
 
 
