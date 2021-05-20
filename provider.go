@@ -3,6 +3,7 @@ package logs
 import (
 	"fmt"
 	"logs/consts"
+	"logs/utils"
 	"net"
 )
 
@@ -92,8 +93,11 @@ func (l *LogAgentProvider) SetLevel(level int) {
 }
 
 func (l *LogAgentProvider) Flush() {
+	// 再打包， 加入自定义协议头
+	buf := utils.PackStreamData(l.buf)
+
 	// 将缓存内数据推到socket
-	_, err := l.conn.Write(l.buf)
+	_, err := l.conn.Write(buf)
 	if err != nil {
 		fmt.Printf("[LogAgentProvider.Flush] Flush: err = %s", err)
 		return
@@ -101,7 +105,6 @@ func (l *LogAgentProvider) Flush() {
 
 	// 清空缓存
 	l.buf = l.buf[:0]
-
 }
 
 
