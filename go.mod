@@ -1,1 +1,1 @@
-module "logs"
+module "github.com/asd864613087/logs"
