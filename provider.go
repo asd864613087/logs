@@ -2,8 +2,8 @@ package logs
 
 import (
 	"fmt"
-	"logs/consts"
-	"logs/utils"
+	"github.com/asd864613087/logs/consts"
+	"github.com/asd864613087/logs/utils"
 	"net"
 )
 
