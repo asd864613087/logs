@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"github.com/asd864613087/logs/consts"
 	"github.com/asd864613087/logs/utils"
+	"os"
 	"sync"
+	"time"
 )
 
 var (
@@ -38,17 +40,22 @@ type Logger struct {
 }
 
 func init() {
+
+	psm := os.Getenv("PSM")
+
 	// TODO: 修改默认Logger
 	defaultLogger = &Logger{
 		level: consts.DEFAULT_LOGGER_LOGLEVEL,
-		psm:   "mz.test",
+		psm:   psm,
 		providerList: []Provider{
 			consoleProvider,
 			logAgentProvider,
 		},
 		buf:        make(chan []byte, 128),
 		signal:     make(chan int, 1),
-		kvs:        map[string]interface{}{},
+		kvs:        map[string]interface{}{
+			"LogID": time.Now().Format("20060102150405"),
+		},
 		threadCnt:  3,
 		WaitGroups: sync.WaitGroup{},
 	}
@@ -121,11 +128,11 @@ func (logger *Logger) fmtKvLog(ctx context.Context, fmtStr string, value []inter
 		logger.kvs[k] = v
 	}
 
-	logger.fmtLog(ctx, fmtStr, value)
+	logger.fmtLog(fmtStr, value)
 }
 
 // 处理Log
-func (logger *Logger) fmtLog(ctx context.Context, fmtStr string, value []interface{}) {
+func (logger *Logger) fmtLog(fmtStr string, value []interface{}) {
 	fmtStr = fmt.Sprintf(fmtStr, value...)
 	w := bytes.NewBuffer([]byte{})
 
@@ -190,7 +197,7 @@ func (logger *Logger) Debug(fmtStr string, value []interface{})  {
 		return
 	}
 
-	logger.fmtLog(context.Background(), fmtStr, value)
+	logger.fmtLog(fmtStr, value)
 }
 
 func (logger *Logger) Info(fmtStr string, value []interface{})  {
@@ -198,7 +205,7 @@ func (logger *Logger) Info(fmtStr string, value []interface{})  {
 		return
 	}
 
-	logger.fmtLog(context.Background(), fmtStr, value)
+	logger.fmtLog(fmtStr, value)
 }
 
 func (logger *Logger) Warn(fmtStr string, value []interface{})  {
@@ -206,7 +213,7 @@ func (logger *Logger) Warn(fmtStr string, value []interface{})  {
 		return
 	}
 
-	logger.fmtLog(context.Background(), fmtStr, value)
+	logger.fmtLog(fmtStr, value)
 }
 
 func (logger *Logger) Error(fmtStr string, value []interface{})  {
@@ -214,7 +221,7 @@ func (logger *Logger) Error(fmtStr string, value []interface{})  {
 		return
 	}
 
-	logger.fmtLog(context.Background(), fmtStr, value)
+	logger.fmtLog(fmtStr, value)
 }
 
 

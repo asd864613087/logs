@@ -69,8 +69,9 @@ func (l *LogAgentProvider) WriteMsg(msg []byte) {
 }
 
 func (l *LogAgentProvider) Init() {
+
 	// TODO: 修改这部分初始化逻辑的位置
-	addr, err := net.ResolveUnixAddr("unix", consts.DEFAULT_LOGAGENT_UNIX_PATH)
+	addr, err := net.ResolveUnixAddr("unix", utils.GetUnixPath())
 	if err != nil {
 		fmt.Printf("[LogAgentProvider.Init] ResolveUnixAddr Failed: err = %s", err)
 		return
