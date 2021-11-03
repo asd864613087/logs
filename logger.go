@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/asd864613087/logs/consts"
 	"github.com/asd864613087/logs/utils"
-	"os"
 	"sync"
 	"time"
 )
@@ -41,7 +40,7 @@ type Logger struct {
 
 func init() {
 
-	psm := os.Getenv("PSM")
+	psm := utils.GetPsm()
 
 	// TODO: 修改默认Logger
 	defaultLogger = &Logger{
