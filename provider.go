@@ -6,6 +6,7 @@ import (
 	"github.com/asd864613087/logs/utils"
 	"net"
 	"os"
+	"time"
 )
 
 var (
@@ -70,26 +71,31 @@ func (l *LogAgentProvider) WriteMsg(msg []byte) {
 }
 
 func (l *LogAgentProvider) Init() {
-	err := os.Remove(utils.GetUnixPath())
-	if err != nil {
-		fmt.Printf("[UnixListener Init] Remove File Failed: err=%s \n", err)
-		return
-	}
+	file := utils.GetUnixPath()
+	os.Remove(file)
 
 	// TODO: 修改这部分初始化逻辑的位置
-	addr, err := net.ResolveUnixAddr("unix", utils.GetUnixPath())
+	addr, err := net.ResolveUnixAddr("unix", file)
 	if err != nil {
 		fmt.Printf("[LogAgentProvider.Init] ResolveUnixAddr Failed: err = %s", err)
 		return
 	}
 
-	conn, err := net.DialUnix("unix", nil, addr)
-	if err != nil {
-		fmt.Printf("[LogAgentProvider.Init] DialUnix Failed: err = %s", err)
-		return
+	for i := 0; i < 5; i++ {
+		conn, err := net.DialUnix("unix", nil, addr)
+		if err != nil {
+			fmt.Printf("[LogAgentProvider.Init] DialUnix Failed: err = %s", err)
+			time.Sleep( 1 * time.Second)
+			continue
+		}
+		l.conn = conn
+		break
 	}
 
-	l.conn = conn
+	if l.conn == nil {
+		panic("[LogAgentProvider.Init] DialUnix Failed")
+	}
+
 	l.level = consts.DEFAULT_LOGAGENT_PROVIDER_LEVEL
 	l.buf = make([]byte, 128)
 	l.signal = make(chan int)
