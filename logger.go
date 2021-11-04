@@ -62,6 +62,8 @@ func init() {
 	for _, p := range defaultLogger.providerList {
 		p.Init()
 	}
+
+	defaultLogger.Start()
 }
 
 func NewLogger(logger *Logger) {

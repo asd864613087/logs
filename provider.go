@@ -81,7 +81,7 @@ func (l *LogAgentProvider) Init() {
 		return
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 15; i++ {
 		conn, err := net.DialUnix("unix", nil, addr)
 		if err != nil {
 			fmt.Printf("[LogAgentProvider.Init] DialUnix Failed: err = %s", err)
