@@ -5,6 +5,7 @@ import (
 	"github.com/asd864613087/logs/consts"
 	"github.com/asd864613087/logs/utils"
 	"net"
+	"os"
 )
 
 var (
@@ -69,6 +70,11 @@ func (l *LogAgentProvider) WriteMsg(msg []byte) {
 }
 
 func (l *LogAgentProvider) Init() {
+	err := os.Remove(utils.GetUnixPath())
+	if err != nil {
+		fmt.Printf("[UnixListener Init] Remove File Failed: err=%s \n", err)
+		return
+	}
 
 	// TODO: 修改这部分初始化逻辑的位置
 	addr, err := net.ResolveUnixAddr("unix", utils.GetUnixPath())
