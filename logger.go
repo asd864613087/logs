@@ -7,7 +7,6 @@ import (
 	"github.com/asd864613087/logs/consts"
 	"github.com/asd864613087/logs/utils"
 	"sync"
-	"time"
 )
 
 var (
@@ -52,9 +51,7 @@ func init() {
 		},
 		buf:        make(chan []byte, 128),
 		signal:     make(chan int, 1),
-		kvs:        map[string]interface{}{
-			"LogID": time.Now().Format("20060102150405"),
-		},
+		kvs:        map[string]interface{}{},
 		threadCnt:  3,
 		WaitGroups: sync.WaitGroup{},
 	}
@@ -150,7 +147,7 @@ func (logger *Logger) fmtLog(fmtStr string, value []interface{}) {
 			fmt.Printf("[fmtLog] Error: %+v \n", err)
 		}
 		w.Write([]byte(k))
-		w.Write([]byte{' '})
+		w.Write([]byte{'='})
 		w.Write(b)
 		w.Write([]byte{' '})
 	}

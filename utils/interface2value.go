@@ -7,6 +7,21 @@ import (
 
 func CtxValueToBytes(value interface{}) ([]byte, error) {
 	switch value.(type) {
+	case string:
+		if s, ok := value.(string); ok {
+			return []byte(s), nil
+		}
+		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert string Failed: value=%+v", value)
+	case []byte:
+		if b, ok := value.([]byte); ok {
+			return b, nil
+		}
+		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert []byte Failed: value=%+v", value)
+	case []rune:
+		if r, ok := value.([]rune); ok {
+			return []byte(string(r)), nil
+		}
+		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert []rune Failed: value=%+v", value)
 	case int:
 		if vInt, ok := value.(int); ok {
 			s := strconv.Itoa(vInt)
@@ -43,21 +58,7 @@ func CtxValueToBytes(value interface{}) ([]byte, error) {
 			return []byte(s), nil
 		}
 		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert uint64 Failed: value=%+v", value)
-	case string:
-		if s, ok := value.(string); ok {
-			return []byte(s), nil
-		}
-		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert string Failed: value=%+v", value)
-	case []byte:
-		if b, ok := value.([]byte); ok {
-			return b, nil
-		}
-		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert []byte Failed: value=%+v", value)
-	case []rune:
-		if r, ok := value.([]rune); ok {
-			return []byte(string(r)), nil
-		}
-		return []byte{}, fmt.Errorf("[CtxValueToBytes] Convert []rune Failed: value=%+v", value)
+
 	default:
 		// TODO: 编解码问题
 		//buffer := bytes.NewBuffer([]byte{})
