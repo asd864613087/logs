@@ -20,16 +20,14 @@ func GetUnixPath() string {
 	hostName := os.Getenv("HOSTNAME")
 	if hostName == "" || len(hostName) == 0 {
 		file := consts.DEFAULT_LOGAGENT_UNIX_PATH_TEST
-		if !isFileExist(file) {
-			createDir(file)
-		}
+
+		createDir(file)
 		return file
 	}
 
 	file := fmt.Sprintf(consts.DEFAULT_LOGAGENT_UNIX_PATH_K8s, hostName)
-	if !isFileExist(file) {
-		createDir(file)
-	}
+
+	createDir(file)
 
 	return file
 
@@ -51,6 +49,7 @@ func isFileExist(path string) bool {
 
 func createDir(path string)  {
 	idx := strings.LastIndex(path, "/")
+
 	err := os.MkdirAll(path[:idx], os.ModePerm)
 	if err != nil {
 		panic(err)

@@ -5,7 +5,6 @@ import (
 	"github.com/asd864613087/logs/consts"
 	"github.com/asd864613087/logs/utils"
 	"net"
-	"os"
 	"time"
 )
 
@@ -72,7 +71,7 @@ func (l *LogAgentProvider) WriteMsg(msg []byte) {
 
 func (l *LogAgentProvider) Init() {
 	file := utils.GetUnixPath()
-	os.Remove(file)
+	// os.Remove(file)
 
 	// TODO: 修改这部分初始化逻辑的位置
 	addr, err := net.ResolveUnixAddr("unix", file)
@@ -81,7 +80,7 @@ func (l *LogAgentProvider) Init() {
 		return
 	}
 
-	for i := 0; i < 15; i++ {
+	for i := 0; i < 30; i++ {
 		conn, err := net.DialUnix("unix", nil, addr)
 		if err != nil {
 			fmt.Printf("[LogAgentProvider.Init] DialUnix Failed: err = %s", err)
