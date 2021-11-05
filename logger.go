@@ -139,6 +139,8 @@ func (logger *Logger) fmtLog(fmtStr string, value []interface{}) {
 	w.Write([]byte{' '})
 	w.Write([]byte(fmt.Sprintf("date=%s", utils.GetCurrentTime())))
 	w.Write([]byte{' '})
+	w.Write([]byte(fmt.Sprintf("podName=%s", utils.GetPodName())))
+	w.Write([]byte{' '})
 
 	// 处理Kv
 	for k, v := range logger.kvs {

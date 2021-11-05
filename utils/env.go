@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+func GetPodName() string {
+	return os.Getenv("HOSTNAME")
+}
+
 func GetPsm() string {
 	hostName := os.Getenv("HOSTNAME")
 	if hostName == "" || len(hostName) == 0 {
