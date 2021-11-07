@@ -154,6 +154,9 @@ func (logger *Logger) fmtLog(fmtStr string, value []interface{}) {
 		w.Write([]byte{' '})
 	}
 
+	// 最后写入raw msg
+	w.Write([]byte(fmtStr))
+
 	select {
 	case logger.buf <- w.Bytes():
 	}
