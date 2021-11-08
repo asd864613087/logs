@@ -11,6 +11,7 @@ import (
 
 var (
 	defaultLogger *Logger
+	loggerKeys = []string{"logId", "upstreamPsm","psm"}
 )
 
 type Logger struct {
@@ -54,6 +55,9 @@ func init() {
 		kvs:        map[string]interface{}{},
 		threadCnt:  3,
 		WaitGroups: sync.WaitGroup{},
+	}
+	for _, item := range loggerKeys {
+		defaultLogger.kvs[item] = ""
 	}
 
 	for _, p := range defaultLogger.providerList {
@@ -123,6 +127,7 @@ func (logger *Logger) fmtKvLog(ctx context.Context, fmtStr string, value []inter
 	// 更新kv
 	for k := range logger.kvs {
 		v := ctx.Value(k)
+
 		logger.kvs[k] = v
 	}
 
