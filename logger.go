@@ -11,7 +11,7 @@ import (
 
 var (
 	defaultLogger *Logger
-	loggerKeys = []string{"logId", "upstreamPsm","psm"}
+	loggerKeys = []string{"logId", "upstreamPsm","psm", "logLevel"}
 )
 
 type Logger struct {
