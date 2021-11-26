@@ -11,7 +11,7 @@ import (
 
 var (
 	defaultLogger *Logger
-	loggerKeys = []string{"logId", "upstreamPsm","psm", "logLevel"}
+	loggerKeys = []string{"source_psm", "log_id","psm", "log_level"}
 )
 
 type Logger struct {
@@ -140,8 +140,8 @@ func (logger *Logger) fmtLog(fmtStr string, value []interface{}) {
 	w := bytes.NewBuffer([]byte{})
 
 	// 处理前缀
-	w.Write([]byte(fmt.Sprintf("psm=%s", logger.psm)))
-	w.Write([]byte{' '})
+	//w.Write([]byte(fmt.Sprintf("psm=%s", logger.psm)))
+	//w.Write([]byte{' '})
 	w.Write([]byte(fmt.Sprintf("date=%s", utils.GetCurrentTime())))
 	w.Write([]byte{' '})
 	w.Write([]byte(fmt.Sprintf("podName=%s", utils.GetPodName())))
