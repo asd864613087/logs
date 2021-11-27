@@ -1,13 +1,18 @@
 package utils
 
-import "time"
+import (
+	"time"
+)
 
 var (
 	loc *time.Location
 )
 
 func init()  {
-	loc, _ = time.LoadLocation("Asia/Shanghai")
+	// 空镜像没有tzdata
+	// loc, _ = time.LoadLocation("Asia/Shanghai")
+	secondsEastOfUTC := int((8 * time.Hour).Seconds())
+	loc = time.FixedZone("CST", secondsEastOfUTC)
 }
 
 func GetCurrentTime() string {
