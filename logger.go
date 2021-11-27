@@ -11,6 +11,7 @@ import (
 
 var (
 	defaultLogger *Logger
+	// TODO: 使用env
 	loggerKeys = []string{"source_psm", "log_id","psm", "log_level"}
 )
 
